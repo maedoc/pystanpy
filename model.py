@@ -1,19 +1,16 @@
 import pystan
-import numpy as np
+from autograd import grad, numpy as np
 
 
 calls = [0]
 
 def lp(x):
     calls[0] += 1
-    if calls[0] % 100 == 0:
+    if calls[0] % 1000 == 0:
         print("calls = ", calls[0])
-    out = x.sum()
-    return (-x**2).sum()
+    return np.sum(-x**2)
 
-def glp(x):
-    calls[0] += 1
-    return -2*x
+glp = grad(lp)
 
 model = pystan.StanModel(
     model_code=open('userfunc.stan').read(),
@@ -23,5 +20,5 @@ model = pystan.StanModel(
     #verbose=True,
     )
 
-chains = model.sampling(data={'n': 100})
+chains = model.sampling(data={'n': 100}, iter=10, warmup=5)
 print(chains)
