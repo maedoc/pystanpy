@@ -1,4 +1,4 @@
-import pystan
+from cmdstanpy import CmdStanModel
 from autograd import grad, numpy as np
 
 
@@ -12,13 +12,6 @@ def lp(x):
 
 glp = grad(lp)
 
-model = pystan.StanModel(
-    model_code=open('userfunc.stan').read(),
-    allow_undefined=True,
-    includes=["func.hpp"],
-    include_dirs=[".", "/usr/include/python3.7m"],
-    #verbose=True,
-    )
-
-chains = model.sampling(data={'n': 100}, iter=10, warmup=5)
-print(chains)
+model = CmdStanModel(exe_file='main')
+fit = model.sample(data={'n': 100}, chains=1, iter_sampling=100, iter_warmup=50)
+print(fit)
