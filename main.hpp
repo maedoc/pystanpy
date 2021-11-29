@@ -39,15 +39,18 @@ namespace callpy {
 #include <math.h>
 
 void foo(int n, const double *x, double *c_lp, double *c_glp) {
+  Py_Initialize();
 	PyGILState_STATE gstate;
 	gstate = PyGILState_Ensure();
 	_import_array();
 
-	PyObject *main = PyImport_ImportModule("__main__");
+  // TODO from env var etc
+  PyObject *name = PyUnicode_DecodeFSDefault("model");
+	PyObject *main = PyImport_Import(name);
+  Py_DECREF(name);
 
 	npy_intp shape[1] = {n};
 	PyObject *np_x = PyArray_SimpleNewFromData(1, shape, NPY_DOUBLE, (void*) x);
-
 
 	if (c_lp != NULL)
 	{
@@ -63,8 +66,9 @@ void foo(int n, const double *x, double *c_lp, double *c_glp) {
 		PyObject *glp = PyObject_GetAttrString(main, "glp");
 		PyArrayObject *glp_val = (PyArrayObject*) PyObject_CallFunctionObjArgs(glp, np_x, NULL);
 		double *c_glp_val = (double*) PyArray_DATA(glp_val);
-		for (int i=0; i<n; i++)
+		for (int i=0; i<n; i++) {
 			c_glp[i] = c_glp_val[i];
+    }
 		Py_DECREF(glp);
 		Py_DECREF(glp_val);
 	}
