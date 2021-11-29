@@ -56,7 +56,7 @@ void foo(int n, const double *x, double *c_lp, double *c_glp) {
 	{
 		PyObject *lp = PyObject_GetAttrString(main, "lp");
 		PyArrayObject *lp_val = (PyArrayObject*) PyObject_CallFunctionObjArgs(lp, np_x, NULL);
-		PyArray_ScalarAsCtype((PyObject*) lp_val, (void*) &c_lp);
+		PyArray_ScalarAsCtype((PyObject*) lp_val, (void*) c_lp);
 		Py_DECREF(lp);
 		Py_DECREF(lp_val);
 	}
@@ -93,14 +93,9 @@ template <> double userfunc2(const Eigen::Matrix<double, -1, 1>& theta, std::ost
 template <> var userfunc2(const Eigen::Matrix<var, -1, 1>& theta, std::ostream* pstream__) {
     const Eigen::Matrix<double, -1, 1> theta_val = value_of(theta);
     double fa;
-    double *ga = new double[theta.rows()];
-    callpy::foo(theta.rows(), theta_val.data(), &fa, ga);
-    std::vector<double> std_ga(theta.rows());
-    std_ga.assign(ga, ga + theta.rows());
-    delete ga;
-    Eigen::Matrix<var, -1, 1> theta_std(theta.rows());
-    theta_std = theta;
-    return precomputed_gradients(fa, theta_std, std_ga);
+    std::vector<double> glp(theta.rows());
+    callpy::foo(theta.rows(), theta_val.data(), &fa, glp.data());
+    return precomputed_gradients(fa, theta, glp);
 }
 
 class userfunc_model final : public model_base_crtp<userfunc_model> {
