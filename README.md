@@ -64,3 +64,11 @@ significant but constant:
 if we bump up the number of parameters from 5
 to 5000, they take ~570 us and 420 us respectively.
 
+## TODO
+
+- [ ] use `autograd.value_and_grad` w/ single C call
+- [ ] clean up code w/ better names
+- [ ] add layer over cmdstanpy to ease use
+- [ ] CI build exes for matrix of cmdstan, python & platforms
+- [ ] build wheels packing exes
+- [ ] extend for Julia [https://docs.julialang.org/en/v1/manual/embedding/](API)?
