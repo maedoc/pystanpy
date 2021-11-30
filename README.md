@@ -66,10 +66,6 @@ to 5000, they take ~570 us and 420 us respectively.
 
 ## TODO
 
-- [ ] improve c++ wrapper
-  - [ ] intialize stuff once
-  - [ ] use faster calls via C-API
-  - [ ] maybe write it with Cython for error handling
 - [ ] use `autograd.value_and_grad` w/ single C call
 - [ ] clean up code w/ better names
 - [ ] add layer over cmdstanpy to ease use

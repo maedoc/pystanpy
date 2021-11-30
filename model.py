@@ -1,11 +1,12 @@
 from cmdstanpy import CmdStanModel
-from autograd import value_and_grad, numpy as np
+from autograd import grad, numpy as np
 
-@value_and_grad
 def lp(x):
     err = np.r_[:x.size] - x
     err = err * 5
     return np.sum(-err**2)
+
+glp = grad(lp)
 
 if __name__ == '__main__':
     model = CmdStanModel(exe_file='main')

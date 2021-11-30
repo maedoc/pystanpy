@@ -5,16 +5,6 @@ PYVER := $(shell python3 -V | cut -f2 -d' ' | cut -f1,2 -d.)
 CFLAGS := -g -I/usr/include/python$(PYVER) -I$(shell python3 -c 'import numpy; print(numpy.get_include())')
 LDFLAGS := -lpython$(PYVER)
 
-wrapper: wrapper.pyx
-	cython --embed $<
-	gcc $(CFLAGS) $(LDFLAGS) -o $@ wrapper.c
-
-check_wrapper: check_wrapper.c wrapper.c
-	gcc $(CFLAGS) $(LDFLAGS) -o $@ $^
-
-wrapper.c: wrapper.pyx
-	cython $<
-
 main: main.hpp
 	echo $(PYVER)
 	echo $(CFLAGS)
