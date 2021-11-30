@@ -52,26 +52,22 @@ void foo(int n, const double *x, double *c_lp, double *c_glp) {
 	npy_intp shape[1] = {n};
 	PyObject *np_x = PyArray_SimpleNewFromData(1, shape, NPY_DOUBLE, (void*) x);
 
-	if (c_lp != NULL)
-	{
-		PyObject *lp = PyObject_GetAttrString(main, "lp");
-		PyArrayObject *lp_val = (PyArrayObject*) PyObject_CallFunctionObjArgs(lp, np_x, NULL);
-		PyArray_ScalarAsCtype((PyObject*) lp_val, (void*) c_lp);
-		Py_DECREF(lp);
-		Py_DECREF(lp_val);
-	}
+  PyObject *lp = PyObject_GetAttrString(main, "lp");
+  PyObject_CallFunctionObjArgs(lp, np_x, NULL);
 
-	if (c_glp != NULL)
-	{
-		PyObject *glp = PyObject_GetAttrString(main, "glp");
-		PyArrayObject *glp_val = (PyArrayObject*) PyObject_CallFunctionObjArgs(glp, np_x, NULL);
-		double *c_glp_val = (double*) PyArray_DATA(glp_val);
-		for (int i=0; i<n; i++) {
-			c_glp[i] = c_glp_val[i];
-    }
-		Py_DECREF(glp);
-		Py_DECREF(glp_val);
-	}
+  // TODO convert from Tuple object
+  PyArrayObject *lp_val ;
+  PyArray_ScalarAsCtype((PyObject*) lp_val, (void*) c_lp);
+  Py_DECREF(lp);
+  Py_DECREF(lp_val);
+
+  PyArrayObject *glp_val = (PyArrayObject*) PyObject_CallFunctionObjArgs(glp, np_x, NULL);
+  double *c_glp_val = (double*) PyArray_DATA(glp_val);
+  for (int i=0; i<n; i++) {
+    c_glp[i] = c_glp_val[i];
+  }
+  Py_DECREF(glp);
+  Py_DECREF(glp_val);
 
 	PyGILState_Release(gstate);
 }
