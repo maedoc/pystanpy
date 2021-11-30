@@ -5,6 +5,9 @@ PYVER := $(shell python3 -V | cut -f2 -d' ' | cut -f1,2 -d.)
 CFLAGS := -g -I/usr/include/python$(PYVER) -I$(shell python3 -c 'import numpy; print(numpy.get_include())')
 LDFLAGS := -lpython$(PYVER)
 
+test: main
+	PYTHONPATH=./ python3 model.py
+
 main: main.hpp
 	echo $(PYVER)
 	echo $(CFLAGS)

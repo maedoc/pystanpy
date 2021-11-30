@@ -25,3 +25,4 @@ jobs:
       - run: ls -lha ~/
       - run: ls -lha ~/.cmdstan
       - run: make main
+      - run: make test
