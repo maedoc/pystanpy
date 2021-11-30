@@ -6,17 +6,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.8']
-    name: Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
+      - run: sudo apt-get install python3-dev python3-pip
       - run: pip install cmdstanpy
-      - run: apt-get install python3-dev
       - run: python -m cmdstanpy.install_cmdstan
+      - run: ls -lha ~/
+      - run: ls -lha ~/.cmdstan
       - run: make main
